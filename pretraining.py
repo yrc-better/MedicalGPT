@@ -174,17 +174,17 @@ class DataArguments:
         if self.streaming:
             require_version("datasets>=2.0.0", "The streaming feature requires `datasets>=2.0.0`")
 
-
+#控制 LoRA / QLoRA 这些“训练方式”的配置。
 @dataclass
 class ScriptArguments:
     use_peft: bool = field(default=True, metadata={"help": "Whether to use peft"})
-    target_modules: Optional[str] = field(default="all")
-    lora_rank: Optional[int] = field(default=8)
+    target_modules: Optional[str] = field(default="all")#lora要插到哪些线性层上
+    lora_rank: Optional[int] = field(default=8)#LoRA 的核心超参 rank (r)。
     lora_dropout: Optional[float] = field(default=0.05)
-    lora_alpha: Optional[float] = field(default=32.0)
+    lora_alpha: Optional[float] = field(default=32.0)#LoRA 的缩放系数 alpha。
     modules_to_save: Optional[str] = field(default=None)
     peft_path: Optional[str] = field(default=None)
-    qlora: bool = field(default=False, metadata={"help": "Whether to use qlora"})
+    qlora: bool = field(default=False, metadata={"help": "Whether to use qlora"})#是否启用 QLoRA：把基座模型用 4bit 等量化方式加载，然后再在其上训练 LoRA。
 
 
 def accuracy(predictions, references, normalize=True, sample_weight=None):
