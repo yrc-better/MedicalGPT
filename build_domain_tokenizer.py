@@ -27,13 +27,13 @@ def main():
     spm.SentencePieceTrainer.train(
         input=args.in_file,
         model_prefix=args.domain_sp_model_name,
-        shuffle_input_sentence=False,
-        train_extremely_large_corpus=True,
+        shuffle_input_sentence=False,#打乱输入序列
+        train_extremely_large_corpus=True,#开启对非常大的预料库的训练支持。
         max_sentence_length=args.max_sentence_length,
         pad_id=args.pad_id,
         model_type=args.model_type,
         vocab_size=args.vocab_size,
-        split_digits=True,
+        split_digits=True,#将数字字符作为单独的字词处理
         split_by_unicode_script=True,
         byte_fallback=True,
         allow_whitespace_only_pieces=True,
