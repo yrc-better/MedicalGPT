@@ -41,12 +41,12 @@ RAG_PROMPT = """基于以下已知信息，简洁和专业的来回答用户的�
 {query_str}
 """
 
-
+#分片
 class SentenceSplitter:
     def __init__(self, chunk_size: int = 250, chunk_overlap: int = 50):
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
-
+        self.chunk_size = chunk_size#每个文本片段最大长度
+        self.chunk_overlap = chunk_overlap#上下文重叠长度
+    
     def split_text(self, text: str) -> List[str]:
         if self._is_has_chinese(text):
             return self._split_chinese_text(text)
@@ -56,7 +56,7 @@ class SentenceSplitter:
     def _split_chinese_text(self, text: str) -> List[str]:
         sentence_endings = {'\n', '。', '！', '？', '；', '…'}  # 句末标点符号
         chunks, current_chunk = [], ''
-        for word in jieba.cut(text):
+        for word in jieba.cut(text):#对文本分词，每次取一个词
             if len(current_chunk) + len(word) > self.chunk_size:
                 chunks.append(current_chunk.strip())
                 current_chunk = word
@@ -73,7 +73,7 @@ class SentenceSplitter:
 
     def _split_english_text(self, text: str) -> List[str]:
         # 使用正则表达式按句子分割英文文本
-        sentences = re.split(r'(?<=[.!?])\s+', text.replace('\n', ' '))
+        sentences = re.split(r'(?<=[.!?])\s+', text.replace('\n', ' '))#正向前瞻匹配。！？后的空格，将换行替换成空格。
         chunks, current_chunk = [], ''
         for sentence in sentences:
             if len(current_chunk) + len(sentence) <= self.chunk_size or not current_chunk:
